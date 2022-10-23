@@ -1,0 +1,111 @@
+// import React, { useEffect, useState } from "react";
+// import {
+//   GoogleMap,
+//   Marker,
+//   useJsApiLoader,
+//   InfoWindow,
+// } from "@react-google-maps/api";
+
+// let coords = [];
+// const lol = ["places"];
+
+// const API_KEY = process.env.REACT_APP_MAPS_API_KEY;
+
+// const containerStyle = {
+//   width: "400px",
+//   height: "400px",
+// };
+
+// const center = {
+//   lat: 51.5072,
+//   lng: 0.1276,
+// };
+
+// function Test() {
+//   const { isLoaded } = useJsApiLoader({
+//     id: "google-map-script",
+//     googleMapsApiKey: "",
+//     libraries: lol,
+//   });
+
+//   const [map, setMap] = React.useState(null);
+//   const [places, setPlaces] = useState([]);
+
+//   const onLoad = React.useCallback(function callback(map) {
+//     const bounds = new window.google.maps.LatLngBounds(center);
+//     map.fitBounds(bounds);
+//     setMap(map);
+
+//     // var pyrmont = new window.google.maps.LatLng(-33.8665433, 151.1956316);
+
+//     const center = {
+//       lat: 51.5072,
+//       lng: 0.1276,
+//     };
+//     var request = {
+//       location: center,
+//       radius: "5500",
+//       type: ["restaurant"],
+//     };
+
+//     // console.log(window.google);
+//     let service = new window.google.maps.places.PlacesService(map);
+
+//     service.nearbySearch(request, (res, s) => {
+//       console.log(res);
+//       setPlaces(res);
+//       console.log(places);
+//     });
+
+//     // service.textSearch(request, (results, status) => {
+//     //   console.log(results);
+//     // });
+
+//     // service.findPlaceFromQuery(request, (results, status) => {
+//     //   for (var i = 0; i < results.length; i++) {
+//     //     // coords.push(results[i]);
+//     //     console.log(results[i]);
+//     //   }
+//     // });
+//     // console.log("COORDS BEFORE", coords);
+//     // setPlaces(coords);
+//   }, []);
+
+//   const onUnmount = React.useCallback(function callback(map) {
+//     setMap(null);
+//   }, []);
+
+//   useEffect(() => {
+//     console.log("PLACES");
+//     console.log(places);
+//     // console.log(places[0].geometry.location.lat);
+//   }, [places]);
+
+//   return isLoaded ? (
+//     <GoogleMap
+//       mapContainerStyle={containerStyle}
+//       center={center}
+//       zoom={7}
+//       onLoad={onLoad}
+//       onUnmount={onUnmount}
+//     >
+//       {/* Child components, such as markers, info windows, etc. */}
+//       <Marker position={center} onLoad={() => {}}></Marker>;<></>
+//       {/* {places === []
+//         ? ""
+//         : places.map((place) => {
+//             return (
+//               <Marker position={place.geometry.location}>
+//                 <InfoWindow options={{ maxWidth: 300 }}>
+//                   <span>{place.name}</span>
+//                 </InfoWindow>
+//               </Marker>
+//             );
+//           })} */}
+//     </GoogleMap>
+//   ) : (
+//     <></>
+//   );
+// }
+
+// export default React.memo(Test);

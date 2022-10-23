@@ -1,28 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   GoogleMap,
   Marker,
   useJsApiLoader,
   InfoWindow,
   useLoadScript,
+  InfoWindowF,
 } from "@react-google-maps/api";
 // import { Map } from "./Map";
 import "./Map.css";
 
 const API = process.env.REACT_APP_API;
 // const API = "";
-const places = ["places"];
 
 export const App = () => {
   const [userLocation, setUserLocation] = useState({ lat: 0, lng: 0 });
   const [places, setPlaces] = useState(null);
   const [map, setMap] = useState(null);
 
+  const placesLibraries = useMemo(() => ["places"], []);
+
   const { isLoaded } = useLoadScript({
     id: "google-map-script",
     googleMapsApiKey: API as string,
     // @ts-ignore
-    libraries: places,
+    libraries: placesLibraries,
   });
 
   const mapRef = useRef<GoogleMap>();
@@ -65,10 +67,39 @@ export const App = () => {
   useEffect(() => {
     if (!map || userLocation.lat === 0) {
       console.log("map undefined or user location undefined");
+      return;
     } else {
-      console.log("");
+      console.log("map defined and user location defined");
+      console.log("object");
+      const service = new google.maps.places.PlacesService(map);
+      console.log("service:");
+      console.log(service);
+
+      var request = {
+        location: userLocation,
+        radius: "1000",
+        type: ["restaurant"],
+      };
+
+      // @ts-ignore
+      service.nearbySearch(request, (res, s) => {
+        console.log(res);
+        // @ts-ignore
+        setPlaces(res);
+      });
     }
   }, [map, userLocation]);
+
+  useEffect(() => {
+    console.log("PLACES STATE");
+    console.log(places);
+  }, [places]);
+
+  const divStyle = {
+    background: `white`,
+    border: `1px solid #ccc`,
+    padding: 15,
+  };
 
   //   if (!isLoaded) return <div>Loading...</div>;
   if (!isLoaded) return <div>Loading...</div>;
@@ -92,7 +123,43 @@ export const App = () => {
             console.log(marker);
           }}
         ></Marker>
+        {places === null
+          ? ""
+          : // @ts-ignore
+            places.map((place: any) => {
+              return (
+                <Marker
+                  position={place.geometry.location}
+                  key={place.geometry.location.lat}
+                >
+                  <InfoWindowF position={place.geometry.location}>
+                    <div style={divStyle}>
+                      <div>
+                        <h2>
+                          <span>{place.name}</span>
+                        </h2>
+                      </div>
+                      <div>
+                        Rating: <span>{place.rating}</span>
+                      </div>
+                      <div>
+                        Total Ratings: <span>{place.user_ratings_total}</span>
+                      </div>
+                    </div>
+                  </InfoWindowF>
+                </Marker>
+              );
+            })}
       </GoogleMap>
+      <button
+        onClick={() => {
+          if (places === null) return;
+          // @ts-ignore
+          mapRef.current?.panTo(places[5].geometry.location);
+        }}
+      >
+        CHOOSE FOR ME
+      </button>
     </div>
   );
 };
